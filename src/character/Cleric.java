@@ -11,14 +11,14 @@ public class Cleric {
 	static final int max_hp = 50;
 	static final int max_mp = 10;
 
-	void selfAid(){
+	public void selfAid(){
 		System.out.println(this.name + "はセリフエイドを唱えた");
 		this.hp = Cleric.max_hp;
 		this.mp -= 5;
 		System.out.println("HPが最大まで回復した");
 	}
 
-	int pray(int sec){
+	public int pray(int sec){
 
 		System.out.println(this.name + "は" + sec + "秒間天に祈りを捧げた");
 
