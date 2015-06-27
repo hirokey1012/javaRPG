@@ -1,16 +1,40 @@
 package character;
 
+//HeroクラスはSuperHeroクラスに継承されている
+//"継承されること"を禁止したいときは以下のように final を付ける
+// public final class Hero{
+
 public class Hero {
 
 	//フィールド名は最初以外の単語の頭が大文字であると良い
-	private String name;	//名前の宣言
-	private int hp;	//HPの宣言	private指定すると、自分自身のクラスからしか呼び出すことができない
 
+	//private String name;
+	//private int hp;	//HPの宣言	private指定すると、自分自身のクラスからしか呼び出すことができない
+
+	protected String name;
+	protected int hp;
+	//継承先のサブクラスで参照するのであればprotectedにする
+	//***注意：参照するというのは、スーパークラスでもサブクラスでも共通のフィールドを使うという意味ではない！
+	//サブクラスを作るときにどんな型でどんな名前か写させてもらいますよ〜、という意味
+	//サブクラスとスーパークラスではもちろん別々のフィールドが用意されている
+
+	//メソッド名は最初以外の単語の頭が大文字であると良い
+
+	//getterとsetter（2つまとめてaccessorと呼ぶ）
 	public int getHp(){
 		return this.hp;
 	}
 	public void setHp(int hp){
 		this.hp = hp;
+	}
+
+	//ステータス表示
+	public void showHp(){
+		System.out.println( getHp() );
+	}
+
+	public void showStatus(){
+		System.out.println(this.name +"のHPは"+this.hp+"です");
 	}
 
 	//***アクセス修飾子の定石***
@@ -21,11 +45,6 @@ public class Hero {
 	//インスタンス未生成の状態でも呼び出せる
 	static int money;
 
-	public void attack(Matango m){
-		//this.hp -= m.attack;
-
-	}
-
 	//静的メソッド（クラス・メソッド）は静的フィールドと合わせて静的メンバと総称される
 	//静的フィールドと同様に、クラス名.メソッド名();で呼び出しできる　もちろん　インスタンス名.メソッド名();　も可
 	//インスタンス未生成の状態でも呼び出せる
@@ -34,7 +53,27 @@ public class Hero {
 		Hero.money = (int)(Math.random()*1000);
 	}
 
-	//メソッド名は最初以外の単語の頭が大文字であると良い
+	//逃走
+	//逃走メソッドはSuperHeroクラスに継承されている
+	public void run(){
+		System.out.println(getName() +"は逃げ出した！");
+	}
+
+	//攻撃
+	//攻撃メソッドはSuperHeroクラスに継承されている
+	public void attack(Matango m){
+		System.out.println(getName() +"の攻撃");
+		m.damage(5);
+	}
+
+	//座る（時間経過回復）
+	//座るメソッドは final をつけているので、SuperHeroクラスに継承されているが
+	//オーバーライドはされない（変更を許さない）
+	public final void sit(int sec){
+		this.hp += sec;
+		System.out.println(this.name +"は" +sec+"秒すわった");
+		System.out.println("HPが" +sec+"ポイント回復した");
+	}
 
 	//睡眠（hp全回復）
 	public void sleep(){
@@ -42,17 +81,6 @@ public class Hero {
 		System.out.println(this.name + "は、眠って回復した");
 	}
 
-	//座る（時間経過回復）
-	public void sit(int sec){
-		this.hp += sec;
-		System.out.println(this.name +"は" +sec+"秒すわった");
-		System.out.println("HPが" +sec+"ポイント回復した");
-	}
-
-	//逃走
-	public void run(){
-		System.out.println(this.name+"は逃げ出した！");
-	}
 	//転倒
 	public void slip(int damage){
 		this.hp -= damage;
@@ -66,13 +94,12 @@ public class Hero {
 		System.out.println("Game Over");
 	}
 
-	//勇者への攻撃		attackメソッドを通さなければ勇者のHPフィールドにはアクセスできない
-	//つまり勇者のHPに異常が起きたときはHPを変動させるメソッド（例：attack）にバグがあると分かる
-	public void attack(int damage){
+	//勇者の被ダメージ　damageメソッドを通さなければ勇者のHPフィールドにはアクセスできない
+	//つまり勇者のHPに異常が起きたときはHPを変動させるメソッド（例：damage）にバグがあると分かる
+	public void damage(int damage){
 		this.hp -= damage;
 		System.out.println("勇者" + this.name + "は" + damage + "のダメージを受けた");
 	}
-
 
 	//コンストラクタは基本的に必要不可欠　newによるインスタンス化の直後に自動実行
 	//ただし、1つもコンストラクタがユーザによって定義されていなければ、
@@ -84,7 +111,6 @@ public class Hero {
 	Hero(String name , int hp){
 		this.hp = hp;
 		this.name = name;
-		Hero.money = 1000;
 	}
 
 	//コンストラクタ1の引数がない場合はこちらのコンストラクタ2が使用される
